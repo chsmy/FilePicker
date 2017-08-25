@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.chs.filepicker.R;
 import com.chs.filepicker.filepicker.util.FileUtils;
@@ -30,6 +31,7 @@ public class FilePickerActivity extends AppCompatActivity implements View.OnClic
     private void initEvent() {
         btn_common.setOnClickListener(this);
         btn_all.setOnClickListener(this);
+        tv_confirm.setOnClickListener(this);
     }
 
     private void initView() {
@@ -89,6 +91,9 @@ public class FilePickerActivity extends AppCompatActivity implements View.OnClic
                 btn_common.setTextColor(ContextCompat.getColor(this,R.color.blue));
                 btn_all.setBackgroundResource(R.mipmap.already_read_pressed);
                 btn_all.setTextColor(ContextCompat.getColor(this,R.color.white));
+                break;
+            case R.id.tv_confirm:
+                Toast.makeText(this,PickerManager.getInstance().files.toString(),Toast.LENGTH_SHORT).show();
                 break;
         }
     }

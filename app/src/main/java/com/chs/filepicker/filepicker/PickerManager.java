@@ -49,7 +49,7 @@ public class PickerManager {
         String[] ppts = {"ppt","pptx"};
         mFileTypes.add(new FileType("PPT",ppts,R.mipmap.file_picker_ppt));
 
-        String[] xlss = {"xls","xlsx"};
+        String[] xlss = {"xls","xlt","xlsx","xltx"};
         mFileTypes.add(new FileType("XLS",xlss,R.mipmap.file_picker_excle));
 
         String[] txts = {"txt"};

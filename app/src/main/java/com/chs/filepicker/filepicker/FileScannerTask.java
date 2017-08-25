@@ -15,16 +15,18 @@ import java.util.List;
 
 import static android.provider.BaseColumns._ID;
 import static android.provider.MediaStore.MediaColumns.DATA;
+
 /**
  * 作者：chs on 2017-08-24 14:39
  * 邮箱：657083984@qq.com
  * 扫描媒体库获取数据
  */
 
-public class FileScannerTask extends AsyncTask<Void ,Void ,List<FileEntity>>{
-    public interface FileScannerListener{
+public class FileScannerTask extends AsyncTask<Void, Void, List<FileEntity>> {
+    public interface FileScannerListener {
         void scannerResult(List<FileEntity> entities);
     }
+
     final String[] DOC_PROJECTION = {
             MediaStore.Images.Media._ID,
             MediaStore.Images.Media.DATA,
@@ -33,6 +35,7 @@ public class FileScannerTask extends AsyncTask<Void ,Void ,List<FileEntity>>{
             MediaStore.Images.Media.DATE_ADDED,
             MediaStore.Files.FileColumns.TITLE
     };
+
     private Context context;
     private FileScannerListener mFileScannerListener;
 
@@ -40,22 +43,31 @@ public class FileScannerTask extends AsyncTask<Void ,Void ,List<FileEntity>>{
         this.context = context;
         mFileScannerListener = fileScannerListener;
     }
+
     //MediaStore.Files存储了所有应用中共享的文件，包括图片、文件、视频、音乐等多媒体文件，包括非多媒体文件。
     @Override
     protected List<FileEntity> doInBackground(Void... params) {
         List<FileEntity> fileEntities = new ArrayList<>();
         final String[] projection = DOC_PROJECTION;
-        String selection = MediaStore.Files.FileColumns.MEDIA_TYPE + "!="
-                + MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE + " AND "
-                + MediaStore.Files.FileColumns.MEDIA_TYPE + "!="
-                + MediaStore.Files.FileColumns.MEDIA_TYPE_VIDEO ;
+//        String selection = MediaStore.Files.FileColumns.MIME_TYPE + "= ? "
+//                + " or " + MediaStore.Files.FileColumns.MIME_TYPE + " = ? "
+//                + " or " + MediaStore.Files.FileColumns.MIME_TYPE + " = ? "
+//                + " or " + MediaStore.Files.FileColumns.MIME_TYPE + " = ? "
+//                + " or " + MediaStore.Files.FileColumns.MIME_TYPE + " = ? "
+//                + " or " + MediaStore.Files.FileColumns.MIME_TYPE + " = ? "
+//                + " or " + MediaStore.Files.FileColumns.MIME_TYPE + " = ? ";
+//        String[] selectionArgs = new String[]{"text/plain", "application/msword",
+//                "application/pdf", "application/vnd.ms-powerpoint",
+//                "application/vnd.ms-excel", "image/jpeg",
+//                "image/png"
+//        };
         final Cursor cursor = context.getContentResolver().query(
                 MediaStore.Files.getContentUri("external"),//数据源
                 projection,//查询类型
-                selection,//查询条件
+                null,//查询条件
                 null,
                 MediaStore.Files.FileColumns.DATE_ADDED + " DESC");
-        if(cursor!=null){
+        if (cursor != null) {
             fileEntities = getFiles(cursor);
             cursor.close();
         }
@@ -65,20 +77,20 @@ public class FileScannerTask extends AsyncTask<Void ,Void ,List<FileEntity>>{
     @Override
     protected void onPostExecute(List<FileEntity> entities) {
         super.onPostExecute(entities);
-        if(mFileScannerListener!=null){
+        if (mFileScannerListener != null) {
             mFileScannerListener.scannerResult(entities);
         }
     }
 
     private List<FileEntity> getFiles(Cursor cursor) {
         List<FileEntity> fileEntities = new ArrayList<>();
-        while (cursor.moveToNext()){
-            int id  = cursor.getInt(cursor.getColumnIndexOrThrow(_ID));
+        while (cursor.moveToNext()) {
+            int id = cursor.getInt(cursor.getColumnIndexOrThrow(_ID));
             String path = cursor.getString(cursor.getColumnIndexOrThrow(DATA));
             String title = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Files.FileColumns.TITLE));
-            if(path!=null){
-                FileType fileType = getFileType(PickerManager.getInstance().getFileTypes(),path);
-                if(fileType!=null && !(new File(path).isDirectory())) {
+            if (path != null) {
+                FileType fileType = getFileType(PickerManager.getInstance().getFileTypes(), path);
+                if (fileType != null && !(new File(path).isDirectory())) {
 
                     FileEntity entity = new FileEntity(id, title, path);
                     entity.setFileType(fileType);
