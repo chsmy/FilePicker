@@ -11,11 +11,12 @@ import java.util.ArrayList;
  */
 
 public class PickerManager {
-    private static PickerManager instance = new PickerManager();
     public static PickerManager getInstance() {
-        return instance;
+        return SingletonHolder.INSTANCE;
     }
-
+    private static class SingletonHolder{
+        private static final PickerManager INSTANCE = new PickerManager();
+    }
     /**
      * 最多能选的文件的个数
      */
@@ -61,5 +62,11 @@ public class PickerManager {
 
     public ArrayList<FileType> getFileTypes() {
         return mFileTypes;
+    }
+
+
+    public PickerManager setMaxCount(int maxCount) {
+        this.maxCount = maxCount;
+        return this;
     }
 }
