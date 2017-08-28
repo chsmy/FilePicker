@@ -5,7 +5,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.chs.filepicker.R;
@@ -52,9 +51,19 @@ public class AllFileAdapter extends RecyclerView.Adapter<FilePickerViewHolder> {
             holder.ivType.setImageResource(R.mipmap.file_picker_folder);
             holder.ivChoose.setVisibility(View.GONE);
         } else {
-            setImage(file, holder.ivType);
+            if(entity.getFileType()!=null){
+                String title = entity.getFileType().getTitle();
+                if (title.equals("IMG")) {
+                    Glide.with(mContext).load(new File(entity.getPath())).into(holder.ivType);
+                } else {
+                    holder.ivType.setImageResource(entity.getFileType().getIconStyle());
+                }
+            }else {
+                holder.ivType.setImageResource(R.mipmap.file_picker_def);
+            }
             holder.ivChoose.setVisibility(View.VISIBLE);
             holder.tvDetail.setText(FileUtils.getReadableFileSize(file.length()));
+
             if (entity.isSelected()) {
                 holder.ivChoose.setImageResource(R.mipmap.file_choice);
             } else {
@@ -69,25 +78,6 @@ public class AllFileAdapter extends RecyclerView.Adapter<FilePickerViewHolder> {
                 }
             }
         });
-    }
-
-    private void setImage(File file, ImageView ivType) {
-        String name = file.getName().toLowerCase();
-        if (name.endsWith("pdf")) {
-            ivType.setImageResource(R.mipmap.file_picker_pdf);
-        } else if (name.endsWith("doc") || name.endsWith("docx") || name.endsWith("dot") || name.endsWith("dotx")) {
-            ivType.setImageResource(R.mipmap.file_picker_word);
-        } else if (name.endsWith("xls") || name.endsWith("xlsx")) {
-            ivType.setImageResource(R.mipmap.file_picker_excle);
-        } else if (name.endsWith("ppt") || name.endsWith("pptx")) {
-            ivType.setImageResource(R.mipmap.file_picker_ppt);
-        } else if (name.endsWith("txt")) {
-            ivType.setImageResource(R.mipmap.file_picker_txt);
-        } else if (name.endsWith("png") || name.endsWith("jpg") || name.endsWith("jpeg")) {
-            Glide.with(mContext).load(file).into(ivType);
-        } else {
-            ivType.setImageResource(R.mipmap.file_picker_def);
-        }
     }
 
     @Override

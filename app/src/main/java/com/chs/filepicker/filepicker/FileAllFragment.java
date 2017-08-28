@@ -103,7 +103,6 @@ public class FileAllFragment extends Fragment {
                     getIntoChildFolder(position);
                 }else {
                     File file = entity.getFile();
-                    String absolutePath = file.getAbsolutePath();
                     ArrayList<FileEntity> files = PickerManager.getInstance().files;
                     if(files.contains(entity)){
                         files.remove(entity);

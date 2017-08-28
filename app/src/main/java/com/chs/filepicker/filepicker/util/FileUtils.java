@@ -2,6 +2,7 @@ package com.chs.filepicker.filepicker.util;
 
 import com.chs.filepicker.filepicker.PickerManager;
 import com.chs.filepicker.filepicker.model.FileEntity;
+import com.chs.filepicker.filepicker.model.FileType;
 
 import java.io.File;
 import java.io.FileFilter;
@@ -35,17 +36,23 @@ public class FileUtils {
             String absolutePath = f.getAbsolutePath();
             FileEntity e;
             if (checkExits(absolutePath)) {
-                e = new FileEntity(absolutePath,f, true);
+                e = new FileEntity(absolutePath, f, true);
             } else {
-                e = new FileEntity(absolutePath,f, false);
+                e = new FileEntity(absolutePath, f, false);
+            }
+            FileType fileType = getFileTypeNoFolder(PickerManager.getInstance().mFileTypes, absolutePath);
+            e.setFileType(fileType);
+            if (PickerManager.getInstance().files.contains(e)) {
+                e.setSelected(true);
             }
             entities.add(e);
         }
         return entities;
     }
-    private static boolean checkExits(String path){
+
+    private static boolean checkExits(String path) {
         for (FileEntity entity : PickerManager.getInstance().files) {
-            if(entity.getPath().equals(path)){
+            if (entity.getPath().equals(path)) {
                 return true;
             }
         }
@@ -57,5 +64,30 @@ public class FileUtils {
         final String[] units = new String[]{"B", "KB", "MB", "GB", "TB"};
         int digitGroups = (int) (Math.log10(size) / Math.log10(1024));
         return new DecimalFormat("#.##").format(size / Math.pow(1024, digitGroups)) + " " + units[digitGroups];
+    }
+
+    public static FileType getFileType(ArrayList<FileType> fileTypes, String path) {
+        for (String str : PickerManager.getInstance().mFilterFolder) {//按文件夹筛选
+            if (path.contains(str)) {
+                for (int index = 0; index < fileTypes.size(); index++) {//按照文件类型筛选
+                    for (String string : fileTypes.get(index).filterType) {
+                        if (path.endsWith(string))
+                            return fileTypes.get(index);
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
+    //不包含文件夹
+    public static FileType getFileTypeNoFolder(ArrayList<FileType> fileTypes, String path) {
+        for (int index = 0; index < fileTypes.size(); index++) {//按照文件类型筛选
+            for (String string : fileTypes.get(index).filterType) {
+                if (path.endsWith(string))
+                    return fileTypes.get(index);
+            }
+        }
+        return null;
     }
 }

@@ -15,6 +15,7 @@ import java.util.List;
 
 import static android.provider.BaseColumns._ID;
 import static android.provider.MediaStore.MediaColumns.DATA;
+import static com.chs.filepicker.filepicker.util.FileUtils.getFileType;
 
 /**
  * 作者：chs on 2017-08-24 14:39
@@ -103,26 +104,14 @@ public class FileScannerTask extends AsyncTask<Void, Void, List<FileEntity>> {
                     }
 
                     entity.setSize(cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Files.FileColumns.SIZE)));
-
+                    if(PickerManager.getInstance().files.contains(entity)){
+                        entity.setSelected(true);
+                    }
                     if (!fileEntities.contains(entity))
                         fileEntities.add(entity);
                 }
             }
         }
         return fileEntities;
-    }
-
-    private FileType getFileType(ArrayList<FileType> fileTypes, String path) {
-        for (String str : PickerManager.getInstance().mFilterFolder) {//按文件夹筛选
-            if (path.contains(str)) {
-                for (int index = 0; index < fileTypes.size(); index++) {//按照文件类型筛选
-                    for (String string : fileTypes.get(index).filterType) {
-                        if (path.endsWith(string))
-                            return fileTypes.get(index);
-                    }
-                }
-            }
-        }
-        return null;
     }
 }
