@@ -104,9 +104,9 @@ public class FileAllFragment extends Fragment {
                 }else {
                     File file = entity.getFile();
                     String absolutePath = file.getAbsolutePath();
-                    ArrayList<String> files = PickerManager.getInstance().files;
-                    if(files.contains(absolutePath)){
-                        files.remove(absolutePath);
+                    ArrayList<FileEntity> files = PickerManager.getInstance().files;
+                    if(files.contains(entity)){
+                        files.remove(entity);
                         if(mOnUpdateDataListener!=null){
                             mOnUpdateDataListener.update(-file.length());
                         }
@@ -114,7 +114,7 @@ public class FileAllFragment extends Fragment {
                         mAllFileAdapter.notifyDataSetChanged();
                     }else {
                         if(PickerManager.getInstance().files.size()<PickerManager.getInstance().maxCount){
-                            files.add(absolutePath);
+                            files.add(entity);
                             if(mOnUpdateDataListener!=null){
                                 mOnUpdateDataListener.update(file.length());
                             }

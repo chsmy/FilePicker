@@ -23,6 +23,7 @@
         android:layout_toRightOf="@id/iv_choose"
         android:gravity="center_vertical"
         android:divider="@drawable/bottom_line"
+        android:showDividers="middle"
         >
         <ImageView
             android:id="@+id/iv_type"

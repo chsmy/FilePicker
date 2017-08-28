@@ -82,9 +82,9 @@ public class FileCommonFragment extends Fragment {
             public void click(int position) {
                 FileEntity entity = entities.get(position);
                 String absolutePath = entity.getPath();
-                ArrayList<String> files = PickerManager.getInstance().files;
-                if(files.contains(absolutePath)){
-                    files.remove(absolutePath);
+                ArrayList<FileEntity> files = PickerManager.getInstance().files;
+                if(files.contains(entity)){
+                    files.remove(entity);
                     if(mOnUpdateDataListener!=null){
                         mOnUpdateDataListener.update(-Long.parseLong(entity.getSize()));
                     }
@@ -92,7 +92,7 @@ public class FileCommonFragment extends Fragment {
                     mCommonFileAdapter.notifyDataSetChanged();
                 }else {
                     if(PickerManager.getInstance().files.size()<PickerManager.getInstance().maxCount){
-                        files.add(absolutePath);
+                        files.add(entity);
                         if(mOnUpdateDataListener!=null){
                             mOnUpdateDataListener.update(Long.parseLong(entity.getSize()));
                         }

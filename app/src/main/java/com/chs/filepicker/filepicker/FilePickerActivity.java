@@ -9,7 +9,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.chs.filepicker.R;
 import com.chs.filepicker.filepicker.util.FileUtils;
@@ -19,6 +18,7 @@ public class FilePickerActivity extends AppCompatActivity implements View.OnClic
     private Button btn_common,btn_all;
     private TextView tv_size,tv_confirm;
     private Fragment commonFileFragment,allFileFragment;
+    private boolean isConfirm = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -93,7 +93,9 @@ public class FilePickerActivity extends AppCompatActivity implements View.OnClic
                 btn_all.setTextColor(ContextCompat.getColor(this,R.color.white));
                 break;
             case R.id.tv_confirm:
-                Toast.makeText(this,PickerManager.getInstance().files.toString(),Toast.LENGTH_SHORT).show();
+                isConfirm = true;
+                setResult(RESULT_OK);
+                finish();
                 break;
         }
     }
@@ -109,6 +111,8 @@ public class FilePickerActivity extends AppCompatActivity implements View.OnClic
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        PickerManager.getInstance().files.clear();
+        if(!isConfirm){
+            PickerManager.getInstance().files.clear();
+        }
     }
 }

@@ -32,17 +32,25 @@ public class FileUtils {
 
         List<FileEntity> entities = new ArrayList<>();
         for (File f : result) {
+            String absolutePath = f.getAbsolutePath();
             FileEntity e;
-            if (PickerManager.getInstance().files.contains(f.getAbsolutePath())) {
-                e = new FileEntity(f, true);
+            if (checkExits(absolutePath)) {
+                e = new FileEntity(absolutePath,f, true);
             } else {
-                e = new FileEntity(f, false);
+                e = new FileEntity(absolutePath,f, false);
             }
             entities.add(e);
         }
         return entities;
     }
-
+    private static boolean checkExits(String path){
+        for (FileEntity entity : PickerManager.getInstance().files) {
+            if(entity.getPath().equals(path)){
+                return true;
+            }
+        }
+        return false;
+    }
 
     public static String getReadableFileSize(long size) {
         if (size <= 0) return "0";

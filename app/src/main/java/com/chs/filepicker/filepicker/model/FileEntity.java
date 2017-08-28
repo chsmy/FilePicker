@@ -28,7 +28,8 @@ public class FileEntity implements Parcelable {
         this.path = path;
     }
 
-    public FileEntity(File file, boolean isSelected) {
+    public FileEntity(String path,File file, boolean isSelected) {
+        this.path = path;
         mFile = file;
         this.isSelected = isSelected;
     }
@@ -38,9 +39,9 @@ public class FileEntity implements Parcelable {
         if (this == o) return true;
         if (!(o instanceof FileEntity)) return false;
 
-        FileEntity document = (FileEntity) o;
+        FileEntity entity = (FileEntity) o;
 
-        return id == document.id;
+        return path .equals(entity.path);
     }
     protected FileEntity(Parcel in) {
         id = in.readInt();

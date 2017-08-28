@@ -1,6 +1,7 @@
 package com.chs.filepicker.filepicker;
 
 import com.chs.filepicker.R;
+import com.chs.filepicker.filepicker.model.FileEntity;
 import com.chs.filepicker.filepicker.model.FileType;
 
 import java.util.ArrayList;
@@ -24,7 +25,7 @@ public class PickerManager {
     /**
      * 保存结果
      */
-    public ArrayList<String> files;
+    public ArrayList<FileEntity> files;
     /**
      * 筛选条件 类型
      */
