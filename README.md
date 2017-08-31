@@ -2,6 +2,7 @@
 文件选择器
 
 效果图：
+
 ![](https://github.com/chsmy/FilePicker/blob/master/images/2012.gif)
 
 钉钉中上传的附件的文件选择器，可以选择常用文件和根据文件夹选择全部文件，做个demo实现这种效果
