@@ -28,7 +28,7 @@ public class FileScannerTask extends AsyncTask<Void, Void, List<FileEntity>> {
         void scannerResult(List<FileEntity> entities);
     }
 
-    final String[] DOC_PROJECTION = {
+    private final String[] DOC_PROJECTION = {
             MediaStore.Images.Media._ID,
             MediaStore.Images.Media.DATA,
             MediaStore.Files.FileColumns.MIME_TYPE,
@@ -49,7 +49,6 @@ public class FileScannerTask extends AsyncTask<Void, Void, List<FileEntity>> {
     @Override
     protected List<FileEntity> doInBackground(Void... params) {
         List<FileEntity> fileEntities = new ArrayList<>();
-        final String[] projection = DOC_PROJECTION;
 //        String selection = MediaStore.Files.FileColumns.MIME_TYPE + "= ? "
 //                + " or " + MediaStore.Files.FileColumns.MIME_TYPE + " = ? "
 //                + " or " + MediaStore.Files.FileColumns.MIME_TYPE + " = ? "
@@ -64,7 +63,7 @@ public class FileScannerTask extends AsyncTask<Void, Void, List<FileEntity>> {
 //        };
         final Cursor cursor = context.getContentResolver().query(
                 MediaStore.Files.getContentUri("external"),//数据源
-                projection,//查询类型
+                DOC_PROJECTION,//查询类型
                 null,//查询条件
                 null,
                 MediaStore.Files.FileColumns.DATE_ADDED + " DESC");
