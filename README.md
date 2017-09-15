@@ -4,8 +4,9 @@
 效果图：
 
 ![](https://github.com/chsmy/FilePicker/blob/master/images/2012.gif)
+![](https://github.com/chsmy/FilePicker/blob/master/images/2013.gif)
 
-钉钉中上传的附件的文件选择器，可以选择常用文件和根据文件夹选择全部文件，做个demo实现这种效果
+钉钉中上传的附件的文件选择器，可以选择常用文件和根据文件夹选择全部文件，demo中也实现了这种效果
 界面跟钉钉不一样，展示方面没啥好说的每个项目的UI展示可能都不一样，关键是数据是怎么或得的。
 
 包括常用文件和全部文件
