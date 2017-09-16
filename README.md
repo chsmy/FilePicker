@@ -9,6 +9,8 @@
 钉钉中上传的附件的文件选择器，可以选择常用文件和根据文件夹选择全部文件，demo中也实现了这种效果
 界面跟钉钉不一样，展示方面没啥好说的每个项目的UI展示可能都不一样，关键是数据是怎么或得的。
 
+介绍：http://blog.csdn.net/mingyunxiaohai/article/details/77994407
+
 包括常用文件和全部文件
 
 >全部文件：
@@ -63,6 +65,29 @@ Cursor cursor = context.getContentResolver().query(
 ```
 
 这样就可以查询出所有的 .tex .doc .dot .xls . jpg .jepeg .png 文件速度快很多。
+
+用法：
+```
+Intent intent = new Intent(this, FilePickerActivity.class);
+        startActivityForResult(intent,REQ_CODE);
+```
+
+```
+ @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == REQ_CODE){
+            FilePickerShowAdapter adapter = new FilePickerShowAdapter(this,PickerManager.getInstance().files);
+            mRecyclerView.setAdapter(adapter);
+            adapter.setOnItemClickListener(new OnFileItemClickListener() {
+                @Override
+                public void click(int position) {
+                    startActivity(Intent.createChooser(OpenFile.openFile(PickerManager.getInstance().files.get(position).getPath(), getApplicationContext()), "选择程序"));
+                }
+            });
+        }
+    }
+```
 
 **Thanks:**
 
