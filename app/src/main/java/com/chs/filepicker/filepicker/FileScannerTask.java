@@ -5,6 +5,8 @@ import android.database.Cursor;
 import android.os.AsyncTask;
 import android.provider.MediaStore;
 import android.text.TextUtils;
+import android.util.Log;
+import android.webkit.MimeTypeMap;
 
 import com.chs.filepicker.filepicker.model.FileEntity;
 import com.chs.filepicker.filepicker.model.FileType;
@@ -49,18 +51,47 @@ public class FileScannerTask extends AsyncTask<Void, Void, List<FileEntity>> {
     @Override
     protected List<FileEntity> doInBackground(Void... params) {
         List<FileEntity> fileEntities = new ArrayList<>();
-//        String selection = MediaStore.Files.FileColumns.MIME_TYPE + "= ? "
-//                + " or " + MediaStore.Files.FileColumns.MIME_TYPE + " = ? "
-//                + " or " + MediaStore.Files.FileColumns.MIME_TYPE + " = ? "
-//                + " or " + MediaStore.Files.FileColumns.MIME_TYPE + " = ? "
-//                + " or " + MediaStore.Files.FileColumns.MIME_TYPE + " = ? "
-//                + " or " + MediaStore.Files.FileColumns.MIME_TYPE + " = ? "
-//                + " or " + MediaStore.Files.FileColumns.MIME_TYPE + " = ? ";
-//        String[] selectionArgs = new String[]{"text/plain", "application/msword",
-//                "application/pdf", "application/vnd.ms-powerpoint",
-//                "application/vnd.ms-excel", "image/jpeg",
-//                "image/png"
-//        };
+        String selection = MediaStore.Files.FileColumns.MIME_TYPE + "= ? "
+                + " or " + MediaStore.Files.FileColumns.MIME_TYPE + " = ? "
+                + " or " + MediaStore.Files.FileColumns.MIME_TYPE + " = ? "
+                + " or " + MediaStore.Files.FileColumns.MIME_TYPE + " = ? "
+                + " or " + MediaStore.Files.FileColumns.MIME_TYPE + " = ? "
+                + " or " + MediaStore.Files.FileColumns.MIME_TYPE + " = ? "
+                + " or " + MediaStore.Files.FileColumns.MIME_TYPE + " = ? "
+                + " or " + MediaStore.Files.FileColumns.MIME_TYPE + " = ? "
+                + " or " + MediaStore.Files.FileColumns.MIME_TYPE + " = ? "
+                + " or " + MediaStore.Files.FileColumns.MIME_TYPE + " = ? "
+                + " or " + MediaStore.Files.FileColumns.MIME_TYPE + " = ? "
+                + " or " + MediaStore.Files.FileColumns.MIME_TYPE + " = ? "
+                + " or " + MediaStore.Files.FileColumns.MIME_TYPE + " = ? "
+                + " or " + MediaStore.Files.FileColumns.MIME_TYPE + " = ? "
+                + " or " + MediaStore.Files.FileColumns.MIME_TYPE + " = ? "
+                + " or " + MediaStore.Files.FileColumns.MIME_TYPE + " = ? "
+                + " or " + MediaStore.Files.FileColumns.MIME_TYPE + " = ? "
+                + " or " + MediaStore.Files.FileColumns.MIME_TYPE + " = ? ";
+        String[] selectionArgs = new String[]{
+                MimeTypeMap.getSingleton().getMimeTypeFromExtension("text"),
+                MimeTypeMap.getSingleton().getMimeTypeFromExtension("doc"),
+                MimeTypeMap.getSingleton().getMimeTypeFromExtension("docx"),
+                MimeTypeMap.getSingleton().getMimeTypeFromExtension("dotx"),
+                MimeTypeMap.getSingleton().getMimeTypeFromExtension("dotx"),
+                MimeTypeMap.getSingleton().getMimeTypeFromExtension("pdf"),
+                MimeTypeMap.getSingleton().getMimeTypeFromExtension("ppt"),
+                MimeTypeMap.getSingleton().getMimeTypeFromExtension("pptx"),
+                MimeTypeMap.getSingleton().getMimeTypeFromExtension("potx"),
+                MimeTypeMap.getSingleton().getMimeTypeFromExtension("ppsx"),
+                MimeTypeMap.getSingleton().getMimeTypeFromExtension("xls"),
+                MimeTypeMap.getSingleton().getMimeTypeFromExtension("xlsx"),
+                MimeTypeMap.getSingleton().getMimeTypeFromExtension("xltx"),
+                MimeTypeMap.getSingleton().getMimeTypeFromExtension("jpg"),
+                MimeTypeMap.getSingleton().getMimeTypeFromExtension("jpg"),
+                MimeTypeMap.getSingleton().getMimeTypeFromExtension("png"),
+                MimeTypeMap.getSingleton().getMimeTypeFromExtension("svg"),
+                MimeTypeMap.getSingleton().getMimeTypeFromExtension("gif")
+        };
+        for (String str : selectionArgs) {
+            Log.i("selectionArgs" , str);
+        }
         final Cursor cursor = context.getContentResolver().query(
                 MediaStore.Files.getContentUri("external"),//数据源
                 DOC_PROJECTION,//查询类型
