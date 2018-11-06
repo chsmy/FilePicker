@@ -1,8 +1,12 @@
 package com.chs.filepicker.filepicker;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -26,7 +30,7 @@ import java.util.List;
  * 常用文件
  */
 
-public class FileCommonFragment extends Fragment {
+public class FileCommonFragment extends BaseFragment implements FileScannerTask.FileScannerListener {
     private RecyclerView mRecyclerView;
     private TextView mEmptyView;
     private ProgressBar mProgressBar;
@@ -60,20 +64,27 @@ public class FileCommonFragment extends Fragment {
     }
 
     private void initData() {
-        new FileScannerTask(getContext(), new FileScannerTask.FileScannerListener() {
-            @Override
-            public void scannerResult(List<FileEntity> entities) {
-                mProgressBar.setVisibility(View.GONE);
-                if(entities.size()>0){
-                    mEmptyView.setVisibility(View.GONE);
-                }else {
-                    mEmptyView.setVisibility(View.VISIBLE);
-                }
-                mCommonFileAdapter = new CommonFileAdapter(getContext(),entities);
-                mRecyclerView.setAdapter(mCommonFileAdapter);
-                iniEvent(entities);
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
+            if (checkPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+                new FileScannerTask(getContext(), this).execute();
+            } else {
+                ActivityCompat.requestPermissions(getActivity(), new String[]{ Manifest.permission.READ_EXTERNAL_STORAGE,Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_PERMISSION_STORAGE);
             }
-        }).execute();
+        }else{
+            new FileScannerTask(getContext(), this).execute();
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == REQUEST_PERMISSION_STORAGE) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                new FileScannerTask(getContext(), this).execute();
+            } else {
+                Toast.makeText(getContext(),"权限被禁止，无法选择本地图片",Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 
     private void iniEvent(final List<FileEntity> entities) {
@@ -106,4 +117,16 @@ public class FileCommonFragment extends Fragment {
         });
     }
 
+    @Override
+    public void scannerResult(List<FileEntity> entities) {
+        mProgressBar.setVisibility(View.GONE);
+        if(entities.size()>0){
+            mEmptyView.setVisibility(View.GONE);
+        }else {
+            mEmptyView.setVisibility(View.VISIBLE);
+        }
+        mCommonFileAdapter = new CommonFileAdapter(getContext(),entities);
+        mRecyclerView.setAdapter(mCommonFileAdapter);
+        iniEvent(entities);
+    }
 }

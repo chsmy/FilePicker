@@ -1,9 +1,13 @@
 package com.chs.filepicker.filepicker;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -28,7 +32,7 @@ import java.util.List;
  * 全部文件
  */
 
-public class FileAllFragment extends Fragment {
+public class FileAllFragment extends BaseFragment {
     private RecyclerView mRecyclerView;
     private TextView mEmptyView,tv_back;
     private String mPath;
@@ -66,6 +70,31 @@ public class FileAllFragment extends Fragment {
     }
 
     private void initData() {
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
+            if (checkPermission(Manifest.permission.READ_EXTERNAL_STORAGE)) {
+                getData();
+            } else {
+                ActivityCompat.requestPermissions(getActivity(), new String[]{ Manifest.permission.READ_EXTERNAL_STORAGE,Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_PERMISSION_STORAGE);
+            }
+        }else{
+           getData();
+        }
+
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == REQUEST_PERMISSION_STORAGE) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                getData();
+            } else {
+                Toast.makeText(getContext(),"权限被禁止，无法选择本地图片",Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    private void getData(){
         if (!Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
             Toast.makeText(getContext(), R.string.not_available, Toast.LENGTH_SHORT).show();
             return;
@@ -76,7 +105,6 @@ public class FileAllFragment extends Fragment {
         mListFiles = getFileList(mPath);
         mAllFileAdapter = new AllFileAdapter(getContext(),mListFiles,mFilter);
         mRecyclerView.setAdapter(mAllFileAdapter);
-
     }
 
     private void initEvent() {
