@@ -1,13 +1,9 @@
 package com.chs.filepicker.filepicker;
 
-import android.Manifest;
-import android.content.pm.PackageManager;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -21,6 +17,9 @@ import com.chs.filepicker.filepicker.adapter.AllFileAdapter;
 import com.chs.filepicker.filepicker.adapter.OnFileItemClickListener;
 import com.chs.filepicker.filepicker.model.FileEntity;
 import com.chs.filepicker.filepicker.util.FileUtils;
+import com.yanzhenjie.permission.Action;
+import com.yanzhenjie.permission.AndPermission;
+import com.yanzhenjie.permission.Permission;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -32,7 +31,7 @@ import java.util.List;
  * 全部文件
  */
 
-public class FileAllFragment extends BaseFragment {
+public class FileAllFragment extends Fragment {
     private RecyclerView mRecyclerView;
     private TextView mEmptyView,tv_back;
     private String mPath;
@@ -70,28 +69,22 @@ public class FileAllFragment extends BaseFragment {
     }
 
     private void initData() {
-        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
-            if (checkPermission(Manifest.permission.READ_EXTERNAL_STORAGE)) {
-                getData();
-            } else {
-                ActivityCompat.requestPermissions(getActivity(), new String[]{ Manifest.permission.READ_EXTERNAL_STORAGE,Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_PERMISSION_STORAGE);
-            }
-        }else{
-           getData();
-        }
-
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == REQUEST_PERMISSION_STORAGE) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                getData();
-            } else {
-                Toast.makeText(getContext(),"权限被禁止，无法选择本地图片",Toast.LENGTH_SHORT).show();
-            }
-        }
+        AndPermission.with(this)
+                .runtime()
+                .permission(Permission.Group.STORAGE)
+                .onGranted(new Action<List<String>>() {
+                    @Override
+                    public void onAction(List<String> data) {
+                        getData();
+                    }
+                })
+                .onDenied(new Action<List<String>>() {
+                    @Override
+                    public void onAction(List<String> data) {
+                        Toast.makeText(getContext(),"读写sdk权限被拒绝",Toast.LENGTH_LONG).show();
+                    }
+                })
+                .start();
     }
 
     private void getData(){

@@ -1,12 +1,8 @@
 package com.chs.filepicker.filepicker;
 
-import android.Manifest;
-import android.content.pm.PackageManager;
-import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -20,6 +16,9 @@ import com.chs.filepicker.R;
 import com.chs.filepicker.filepicker.adapter.CommonFileAdapter;
 import com.chs.filepicker.filepicker.adapter.OnFileItemClickListener;
 import com.chs.filepicker.filepicker.model.FileEntity;
+import com.yanzhenjie.permission.Action;
+import com.yanzhenjie.permission.AndPermission;
+import com.yanzhenjie.permission.Permission;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,7 +29,7 @@ import java.util.List;
  * 常用文件
  */
 
-public class FileCommonFragment extends BaseFragment implements FileScannerTask.FileScannerListener {
+public class FileCommonFragment extends Fragment implements FileScannerTask.FileScannerListener {
     private RecyclerView mRecyclerView;
     private TextView mEmptyView;
     private ProgressBar mProgressBar;
@@ -64,27 +63,22 @@ public class FileCommonFragment extends BaseFragment implements FileScannerTask.
     }
 
     private void initData() {
-        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
-            if (checkPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-                new FileScannerTask(getContext(), this).execute();
-            } else {
-                ActivityCompat.requestPermissions(getActivity(), new String[]{ Manifest.permission.READ_EXTERNAL_STORAGE,Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_PERMISSION_STORAGE);
-            }
-        }else{
-            new FileScannerTask(getContext(), this).execute();
-        }
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == REQUEST_PERMISSION_STORAGE) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                new FileScannerTask(getContext(), this).execute();
-            } else {
-                Toast.makeText(getContext(),"权限被禁止，无法选择本地图片",Toast.LENGTH_SHORT).show();
-            }
-        }
+        AndPermission.with(this)
+                .runtime()
+                .permission(Permission.Group.STORAGE)
+                .onGranted(new Action<List<String>>() {
+                    @Override
+                    public void onAction(List<String> data) {
+                        new FileScannerTask(getContext(), FileCommonFragment.this).execute();
+                    }
+                })
+                .onDenied(new Action<List<String>>() {
+                    @Override
+                    public void onAction(List<String> data) {
+                        Toast.makeText(getContext(),"读写sdk权限被拒绝",Toast.LENGTH_LONG).show();
+                    }
+                })
+                .start();
     }
 
     private void iniEvent(final List<FileEntity> entities) {
