@@ -41,11 +41,13 @@ public class FileUtils {
                 e = new FileEntity(absolutePath, f, false);
             }
             FileType fileType = getFileTypeNoFolder(PickerManager.getInstance().mFileTypes, absolutePath);
-            e.setFileType(fileType);
-            if (PickerManager.getInstance().files.contains(e)) {
-                e.setSelected(true);
+            if(fileType!=null){
+                e.setFileType(fileType);
+                if (PickerManager.getInstance().files.contains(e)) {
+                    e.setSelected(true);
+                }
+                entities.add(e);
             }
-            entities.add(e);
         }
         return entities;
     }
