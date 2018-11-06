@@ -5,7 +5,6 @@ import android.database.Cursor;
 import android.os.AsyncTask;
 import android.provider.MediaStore;
 import android.text.TextUtils;
-import android.util.Log;
 import android.webkit.MimeTypeMap;
 
 import com.chs.filepicker.filepicker.model.FileEntity;
@@ -89,14 +88,14 @@ public class FileScannerTask extends AsyncTask<Void, Void, List<FileEntity>> {
                 MimeTypeMap.getSingleton().getMimeTypeFromExtension("svg"),
                 MimeTypeMap.getSingleton().getMimeTypeFromExtension("gif")
         };
-        for (String str : selectionArgs) {
-            Log.i("selectionArgs" , str);
-        }
+//        for (String str : selectionArgs) {
+//            Log.i("selectionArgs" , str);
+//        }
         final Cursor cursor = context.getContentResolver().query(
                 MediaStore.Files.getContentUri("external"),//数据源
                 DOC_PROJECTION,//查询类型
-                null,//查询条件
-                null,
+                selection,//查询条件
+                selectionArgs,
                 MediaStore.Files.FileColumns.DATE_ADDED + " DESC");
         if (cursor != null) {
             fileEntities = getFiles(cursor);

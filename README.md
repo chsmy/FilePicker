@@ -41,7 +41,7 @@ Cursor cursor = context.getContentResolver().query(
                 null,
                 MediaStore.Files.FileColumns.DATE_ADDED + " DESC");
 ```
-查询条件没有写所以查询所有的文件，现实项目中如果明确知道要查询的文件类型可以更改查询条件，**这样可以非常有效的提高查询的速度**。
+查询条件没有写所以查询所有的文件，会差所有文件，如果手机中文件很多，效率会非常低，现实项目中如果明确知道要查询的文件类型可以更改查询条件，**这样可以非常有效的提高查询的速度**。
 比如：
 ```
  String selection = MediaStore.Files.FileColumns.MIME_TYPE + "= ? "
